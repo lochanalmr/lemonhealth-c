@@ -40,7 +40,7 @@ int main(void) {
     do {
         // Introduction
         printf("======================\n");
-        printf("   LemonHealth v1\n");
+        printf("   LemonHealth v1.02\n");
         printf("======================\n");
         printf("\nSupported Options are BMI/ BAI/ WHR\n");
         printf("BMI: Body Mass Index\n");
