@@ -2,113 +2,114 @@
 #include <string.h>
 #include <windows.h>
 #include <math.h>
-#include <stdlib.h>
+#include <math.h>
 
-const float LBS_TO_KG = 2.205f;
-const float INCHES_TO_METERS = 39.37f;
+const double LBS_TO_KG = 2.20462;
+const double INCHES_TO_METERS = 39.3701;
+
+// BMI Thresholds (Global/Other)
+const double BMI_UNDERWEIGHT = 18.5;
+const double BMI_NORMAL_MAX = 25.0;
+const double BMI_OVERWEIGHT_MAX = 30.0;
+
+// BMI Thresholds (Asia)
+const double BMI_ASIA_NORMAL_MAX = 23.0;
+const double BMI_ASIA_OVERWEIGHT_MAX = 27.0;
 
 int age_s(void);
 char gender_s(void);
 char region_s(void);
 char unit_s(void);
-float height_col(void);
-float weight_col(void);
-float hipc_col(void);
-float waist_col(void);
-float bmi_calc(float height, float weight, char unit);
-float bai_calc(float height, float hipc, char unit);
-float whr_calc(float hipc, float waist, char unit);
-void bmi_class(char gender, char region, int age, float bmi);
-void bai_class(char gender, int age, float bai);
-void whr_class(char gender, int age, float whr);
+double height_col(void);
+double weight_col(void);
+double hipc_col(void);
+double waist_col(void);
+double bmi_calc(double height, double weight, char unit);
+double bai_calc(double height, double hipc, char unit);
+double whr_calc(double hipc, double waist, char unit);
+void bmi_class(char gender, char region, int age, double bmi);
+void bai_class(char gender, int age, double bai);
+void whr_class(char gender, int age, double whr);
 void report_gen(void);
 void user_error(void);
-void end_program(void);
+int end_program(void); // Returns 1 to restart, 0 to exit
+void clear_input_buffer(void);
 
 int main(void) {
-    // Introduction
-    printf("======================\n");
-    printf("   LemonHealth v1\n");
-    printf("======================\n");
-    printf("\nSupported Options are BMI/ BAI/ WHR/ MM\n");
-    printf("BMI: Body Mass Index\n");
-    printf("BAI: Body Mass Index\n");
-    printf("WHR: Waist to Hip Ratio\n");
-    //printf("MM: MultiMeasure for an overall health summary\n");
+    int restart = 0;
+    do {
+        // Introduction
+        printf("======================\n");
+        printf("   LemonHealth v1\n");
+        printf("======================\n");
+        printf("\nSupported Options are BMI/ BAI/ WHR\n");
+        printf("BMI: Body Mass Index\n");
+        printf("BAI: Body Adiposity Index\n");
+        printf("WHR: Waist to Hip Ratio\n");
 
-    // Option Selection
-    printf("\nChoose an option: ");
-    char choice[10];
-    fgets(choice, sizeof(choice), stdin);
-    choice[strcspn(choice, "\n")] = '\0';
+        // Option Selection
+        printf("\nChoose an option: ");
+        char choice[10];
+        if (fgets(choice, sizeof(choice), stdin) == NULL) break;
+        choice[strcspn(choice, "\n")] = '\0';
 
-    // Unit Selection
-    char unit = unit_s();
+        // Unit Selection
+        char unit = unit_s();
 
-    // Gender Selection
-    char gender = gender_s();
+        // Gender Selection
+        char gender = gender_s();
 
-    // Age Selection
-    int age = age_s();
+        // Age Selection
+        int age = age_s();
 
-    // Program Logic
-    if (strcmp(choice, "BMI") == 0) {
-        printf("\n===BMI calculation & classification module===\n");
-        // Additional fundamental data collection
-        printf("For accurate BMI classification, region is required\n");
-        char region = region_s();
+        // Program Logic
+        if (strcmp(choice, "BMI") == 0) {
+            printf("\n===BMI calculation & classification module===\n");
+            // Additional fundamental data collection
+            printf("For accurate BMI classification, region is required\n");
+            char region = region_s();
 
-        // BMI calculation related data collection
-        float height = height_col();
-        float weight = weight_col();
+            // BMI calculation related data collection
+            double height = height_col();
+            double weight = weight_col();
 
-        // BMI calculation module run
-        float bmi_val = bmi_calc(height, weight, unit);
-        bmi_class(gender, region, age, bmi_val);
-        end_program();
-    }
+            // BMI calculation module run
+            double bmi_val = bmi_calc(height, weight, unit);
+            bmi_class(gender, region, age, bmi_val);
+            restart = end_program();
+        }
 
-    else if (strcmp(choice, "BAI") == 0) {
-        printf("\n===BAI calculation & classification module===\n");
-        // BAI calculation related data collection
-        float height = height_col();
-        float hipc = hipc_col();
+        else if (strcmp(choice, "BAI") == 0) {
+            printf("\n===BAI calculation & classification module===\n");
+            // BAI calculation related data collection
+            double height = height_col();
+            double hipc = hipc_col();
 
-        // BAI calculation module run
-        float bai_val = bai_calc(height, hipc, unit);
-        bai_class(gender, age, bai_val);
-        end_program();
-    }
+            // BAI calculation module run
+            double bai_val = bai_calc(height, hipc, unit);
+            bai_class(gender, age, bai_val);
+            restart = end_program();
+        }
 
-    else if (strcmp(choice, "WHR") == 0) {
-        printf("\n===WHR calculation & classification module===\n");
-        // WHR calculation related data collection
-        float waist = waist_col();
-        float hipc = hipc_col();
+        else if (strcmp(choice, "WHR") == 0) {
+            printf("\n===WHR calculation & classification module===\n");
+            // WHR calculation related data collection
+            double waist = waist_col();
+            double hipc = hipc_col();
 
-        // WHR calculation module run
-        float whr_val = whr_calc(hipc, waist, unit);
-        whr_class(gender, age, whr_val);
-        end_program();
-    }
+            // WHR calculation module run
+            double whr_val = whr_calc(hipc, waist, unit);
+            whr_class(gender, age, whr_val);
+            restart = end_program();
+        }
 
-    // else if (strcmp(choice, "MM") == 0) {
-    //     printf("\n===MultiMeasure calculation & classification module===\n");
-    //     // MM related data collection
-    //     float height = height_col();
-    //     float weight = weight_col();
-    //     float hipc = hipc_col();
-    //     float waist = waist_col();
-    //
-    //     // Additional fundamental data collection
-    //     printf("For accurate BMI classification, region is required\n");
-    //     char region = region_s();
-    // }
+        else {
+            printf("Function '%s' not found!\n", choice);
+            user_error();
+            restart = 1; // Restart after error
+        }
+    } while (restart);
 
-    else {
-        printf("Function not found!\n");
-        user_error();
-    }
     return 0;
 }
 
@@ -120,35 +121,51 @@ void user_error(void) {
         printf(".");
     }
     printf("\n");
-    main();
+}
+
+void clear_input_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 char region_s(void) {
     char region = '\0';
-    printf("Please select 'A' if in Asia, or 'O' if in any other region: ");
-    scanf(" %c", &region);
-    if (region != 'A' && region != 'O') {
-        user_error();
+    while (1) {
+        printf("Please select 'A' if in Asia, or 'O' if in any other region: ");
+        if (scanf(" %c", &region) == 1 && (region == 'A' || region == 'O')) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. ");
     }
     return region;
 }
 
 char gender_s(void) {
     char gender = '\0';
-    printf("Please select 'M' if Male, or 'F' if Female: ");
-    scanf(" %c", &gender);
-    if (gender != 'M' && gender != 'F') {
-        user_error();
+    while (1) {
+        printf("Please select 'M' if Male, or 'F' if Female: ");
+        if (scanf(" %c", &gender) == 1 && (gender == 'M' || gender == 'F')) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. ");
     }
     return gender;
 }
 
 int age_s(void) {
     int age = 0;
-    printf("Age: ");
-    scanf("%d", &age);
-    if (age == 0) {
-        user_error();
+    while (1) {
+        printf("Age: ");
+        if (scanf("%d", &age) == 1 && age > 0) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. Please enter a positive integer for age.\n");
     }
     return age;
 }
@@ -172,50 +189,66 @@ char unit_s(void) {
     return unit;
 }
 
-float height_col(void) {
-    float height = 0.0f;
-    printf("Height: ");
-    scanf("%f", &height);
-    if (height == 0.0f) {
-        user_error();
+double height_col(void) {
+    double height = 0.0;
+    while (1) {
+        printf("Height: ");
+        if (scanf("%lf", &height) == 1 && height > 0) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. Please enter a positive number for height.\n");
     }
     return height;
 }
 
-float weight_col(void) {
-    float weight = 0.0f;
-    printf("Weight: ");
-    scanf("%f", &weight);
-    if (weight == 0.0f) {
-        user_error();
+double weight_col(void) {
+    double weight = 0.0;
+    while (1) {
+        printf("Weight: ");
+        if (scanf("%lf", &weight) == 1 && weight > 0) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. Please enter a positive number for weight.\n");
     }
     return weight;
 }
 
-float waist_col(void) {
-    float waist = 0.0f;
-    printf("Waist Circumference: ");
-    scanf("%f", &waist);
-    if (waist == 0.0f) {
-        user_error();
+double waist_col(void) {
+    double waist = 0.0;
+    while (1) {
+        printf("Waist Circumference: ");
+        if (scanf("%lf", &waist) == 1 && waist > 0) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. Please enter a positive number for waist.\n");
     }
     return waist;
 }
 
-float hipc_col(void) {
-    float hipc = 0.0f;
-    printf("Hip Circumference: ");
-    scanf("%f", &hipc);
-    if (hipc == 0.0f) {
-        user_error();
+double hipc_col(void) {
+    double hipc = 0.0;
+    while (1) {
+        printf("Hip Circumference: ");
+        if (scanf("%lf", &hipc) == 1 && hipc > 0) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. Please enter a positive number for hip circumference.\n");
     }
     return hipc;
 }
 
-float bmi_calc(float height, float weight, char unit) {
-    float bmi = 0.0f;
+double bmi_calc(double height, double weight, char unit) {
+    double bmi = 0.0;
     if (unit == 'I') {
-        bmi = (weight/LBS_TO_KG) / ((height/INCHES_TO_METERS) * (height/INCHES_TO_METERS));
+        bmi = (weight / LBS_TO_KG) / ((height / INCHES_TO_METERS) * (height / INCHES_TO_METERS));
     }
     else if (unit == 'M') {
         bmi = weight / (height * height);
@@ -226,13 +259,13 @@ float bmi_calc(float height, float weight, char unit) {
     return bmi;
 }
 
-float bai_calc(float height, float hipc, char unit) {
-    float bai = 0.0f;
+double bai_calc(double height, double hipc, char unit) {
+    double bai = 0.0;
     if (unit == 'I') {
-        bai = ((hipc/INCHES_TO_METERS)*100.0f) / pow(height, 1.5) - 18.0f;
+        bai = ((hipc / INCHES_TO_METERS) * 100.0) / pow(height, 1.5) - 18.0;
     }
     else if (unit == 'M') {
-        bai = (hipc*100.0f) / pow(height, 1.5f) - 18.0f;
+        bai = (hipc * 100.0) / pow(height, 1.5) - 18.0;
     }
     else {
         user_error();
@@ -240,9 +273,10 @@ float bai_calc(float height, float hipc, char unit) {
     return bai;
 }
 
-float whr_calc(float hipc, float waist, char unit) {
-    float whr = 0.0f;
+double whr_calc(double hipc, double waist, char unit) {
+    double whr = 0.0;
     if (unit == 'I' || unit == 'M') {
+        if (hipc == 0.0) return 0.0;
         whr = waist / hipc;
     }
     else {
@@ -251,38 +285,38 @@ float whr_calc(float hipc, float waist, char unit) {
     return whr;
 }
 
-void bmi_class(char gender, char region, int age, float bmi) {
+void bmi_class(char gender, char region, int age, double bmi) {
     if (age <= 18) {
         printf("No classification can be done for users below 18\n");
     }
-    else if (region == 'G') {
-        if (bmi <= 18.5) {
+    else if (region == 'O') { // Global standards
+        if (bmi <= BMI_UNDERWEIGHT) {
             printf("You are classified as Underweight\n");
         }
-        else if (bmi < 25 && bmi >= 18.5) {
+        else if (bmi < BMI_NORMAL_MAX && bmi > BMI_UNDERWEIGHT) {
             printf("You are classified as Normal\n");
         }
-        else if (bmi < 30 && bmi >= 25) {
+        else if (bmi < BMI_OVERWEIGHT_MAX && bmi >= BMI_NORMAL_MAX) {
             printf("You are classified as Overweight\n");
         }
-        else if (bmi >= 30) {
+        else if (bmi >= BMI_OVERWEIGHT_MAX) {
             printf("You are classified as Obese\n");
         }
         else {
             user_error();
         }
     }
-    else if (region == 'A') {
-        if (bmi <= 18.5) {
+    else if (region == 'A') { // Asian standards
+        if (bmi <= BMI_UNDERWEIGHT) {
             printf("You are classified as Underweight\n");
         }
-        else if (bmi < 23 && bmi >= 18.5) {
+        else if (bmi < BMI_ASIA_NORMAL_MAX && bmi > BMI_UNDERWEIGHT) {
             printf("You are classified as Normal\n");
         }
-        else if (bmi < 27 && bmi >= 23) {
+        else if (bmi < BMI_ASIA_OVERWEIGHT_MAX && bmi >= BMI_ASIA_NORMAL_MAX) {
             printf("You are classified as Overweight\n");
         }
-        else if (bmi >= 27) {
+        else if (bmi >= BMI_ASIA_OVERWEIGHT_MAX) {
             printf("You are classified as Obese\n");
         }
         else {
@@ -294,7 +328,7 @@ void bmi_class(char gender, char region, int age, float bmi) {
     }
 }
 
-void bai_class(char gender, int age, float bai) {
+void bai_class(char gender, int age, double bai) {
     if (age <= 18) {
         printf("No classification can be done for users below 18\n");
     }
@@ -313,7 +347,7 @@ void bai_class(char gender, int age, float bai) {
                 printf("You are classified as Obese\n");
             }
         }
-        else if (age < 60) {
+        else if (age <= 60 && age >= 40) {
             if (bai < 11) {
                 printf("You are classified as Underweight\n");
             }
@@ -360,7 +394,7 @@ void bai_class(char gender, int age, float bai) {
                 printf("You are classified as Obese\n");
             }
         }
-        else if (age < 60) {
+        else if (age <= 60 && age >= 40) {
             if (bai < 23) {
                 printf("You are classified as Underweight\n");
             }
@@ -394,8 +428,8 @@ void bai_class(char gender, int age, float bai) {
     }
 }
 
-void whr_class(char gender, int age, float whr) {
-    char *label = "Default";
+void whr_class(char gender, int age, double whr) {
+    const char *label = "Default";
     if (gender == 'M') {
         if (whr <= 0.95) {
             label = "low health risk";
@@ -421,13 +455,17 @@ void whr_class(char gender, int age, float whr) {
     printf("You are classified as having a '%s'\n", label);
 }
 
-void end_program(void) {
+int end_program(void) {
     printf("Thank you for using LemonHealth!\n");
     printf("Enter 'X' to exit, or enter 'C' to restart program:  ");
     char end_choice = '\0';
-    scanf(" %c", &end_choice);
+    if (scanf(" %c", &end_choice) != 1) {
+        clear_input_buffer();
+        return 0; // Exit on bad input
+    }
+    clear_input_buffer();
     if (end_choice == 'X' || end_choice == 'x') {
-        exit(0);
+        return 0;
     }
     if (end_choice == 'C' || end_choice == 'c') {
         printf("Restarting Program");
@@ -436,9 +474,10 @@ void end_program(void) {
             printf(".");
         }
         printf("\n");
-        main();
+        return 1;
     }
     else {
         user_error();
+        return 1;
     }
 }
