@@ -1,3 +1,0 @@
-C:/Users/ASUS/CLionProjects/LemonHealthC/build/CMakeFiles/LemonHealthC.dir
-C:/Users/ASUS/CLionProjects/LemonHealthC/build/CMakeFiles/edit_cache.dir
-C:/Users/ASUS/CLionProjects/LemonHealthC/build/CMakeFiles/rebuild_cache.dir
