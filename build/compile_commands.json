@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/ASUS/CLionProjects/LemonHealthC/build",
+  "command": "C:\\PROGRA~1\\MICROS~4\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /DWIN32 /D_WINDOWS /Ob0 /Od -std:clatest -MDd -RTC1 -Zi /FoCMakeFiles\\LemonHealthC.dir\\main.c.obj /FdCMakeFiles\\LemonHealthC.dir\\ /FS -c C:\\Users\\ASUS\\CLionProjects\\LemonHealthC\\main.c",
+  "file": "C:/Users/ASUS/CLionProjects/LemonHealthC/main.c",
+  "output": "C:/Users/ASUS/CLionProjects/LemonHealthC/build/CMakeFiles/LemonHealthC.dir/main.c.obj"
+}
+]
