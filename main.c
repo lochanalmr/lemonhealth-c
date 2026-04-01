@@ -2,7 +2,6 @@
 #include <string.h>
 #include <windows.h>
 #include <math.h>
-#include <math.h>
 
 const double LBS_TO_KG = 2.20462;
 const double INCHES_TO_METERS = 39.3701;
@@ -39,9 +38,9 @@ int main(void) {
     int restart = 0;
     do {
         // Introduction
-        printf("======================\n");
+        printf("==========================\n");
         printf("   LemonHealth v1.02\n");
-        printf("======================\n");
+        printf("==========================\n");
         printf("\nSupported Options are BMI/ BAI/ WHR\n");
         printf("BMI: Body Mass Index\n");
         printf("BAI: Body Adiposity Index\n");
