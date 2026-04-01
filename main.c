@@ -38,13 +38,14 @@ int main(void) {
     int restart = 0;
     do {
         // Introduction
-        printf("==========================\n");
-        printf("   LemonHealth v1.02\n");
-        printf("==========================\n");
-        printf("\nSupported Options are BMI/ BAI/ WHR\n");
+        printf("===========================\n");
+        printf("   LemonHealth v1.03\n");
+        printf("===========================\n");
+        printf("\nSupported Options are:\n");
         printf("BMI: Body Mass Index\n");
         printf("BAI: Body Adiposity Index\n");
         printf("WHR: Waist to Hip Ratio\n");
+        printf("MM: MultiMeasure (All supported functions report)\n");
 
         // Option Selection
         printf("\nChoose an option: ");
@@ -98,6 +99,31 @@ int main(void) {
 
             // WHR calculation module run
             double whr_val = whr_calc(hipc, waist, unit);
+            whr_class(gender, age, whr_val);
+            restart = end_program();
+        }
+
+        else if (strcmp(choice, "MM") == 0) {
+            printf("\n===MM calculation & classification module===\n");
+
+            // BAI calculation related data collection
+            double height = height_col();
+            double weight = weight_col();
+            double waist = waist_col();
+            double hipc = hipc_col();
+            printf("For accurate BMI classification, region is required\n");
+            char region = region_s();
+
+            // MM calculation module run
+            double bmi_val = bmi_calc(height, weight, unit);
+            double bai_val = bai_calc(height, hipc, unit);
+            double whr_val = whr_calc(hipc, waist, unit);
+            printf("\n=====LemonHealth MultiMeasure Report v1======\n");
+            printf("BMI Classification: ");
+            bmi_class(gender, region, age, bmi_val);
+            printf("BAI Classification: ");
+            bai_class(gender, age, bai_val);
+            printf("WHR Classification: ");
             whr_class(gender, age, whr_val);
             restart = end_program();
         }
@@ -346,7 +372,7 @@ void bai_class(char gender, int age, double bai) {
                 printf("You are classified as Obese\n");
             }
         }
-        else if (age <= 60 && age >= 40) {
+        else if (age <= 60) {
             if (bai < 11) {
                 printf("You are classified as Underweight\n");
             }
@@ -360,7 +386,7 @@ void bai_class(char gender, int age, double bai) {
                 printf("You are classified as Obese\n");
             }
         }
-        else if (age > 60) {
+        else {
             if (bai < 13) {
                 printf("You are classified as Underweight\n");
             }
@@ -373,9 +399,6 @@ void bai_class(char gender, int age, double bai) {
             else {
                 printf("You are classified as Obese\n");
             }
-        }
-        else {
-            user_error();
         }
     }
     else if (gender == 'F') {
