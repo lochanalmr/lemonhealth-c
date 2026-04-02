@@ -1,4 +1,4 @@
-# MultiMeter in C
+# LemonHealth in C
 
 ## Introduction
 Command-line based health calculator 
