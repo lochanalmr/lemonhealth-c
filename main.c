@@ -2,6 +2,8 @@
 #include <string.h>
 #include <windows.h>
 #include <math.h>
+#include <time.h>
+
 
 const double LBS_TO_KG = 2.20462;
 const double INCHES_TO_METERS = 39.3701;
@@ -28,11 +30,12 @@ double bai_calc(double height, double hipc, char unit);
 double whr_calc(double hipc, double waist, char unit);
 double rfm_calc(double height, double waist, char gender);
 double whtr_calc(double height, double waist);
-void bmi_class(char gender, char region, int age, double bmi);
-void bai_class(char gender, int age, double bai);
-void whr_class(char gender, int age, double whr);
-void rfm_class(char gender, double rfm);
-void whtr_class(double whtr);
+const char* bmi_class(char gender, char region, int age, double bmi);
+const char* bai_class(char gender, int age, double bai);
+const char* whr_class(char gender, int age, double whr);
+const char* rfm_class(char gender, double rfm);
+const char* whtr_class(double whtr);
+
 void report_gen(void);
 void user_error(void);
 int end_program(void); // Returns 1 to restart, 0 to exit
@@ -81,9 +84,9 @@ int main(void) {
 
             // BMI calculation module run
             double bmi_val = bmi_calc(height, weight, unit);
-            printf("Classification: ");
-            bmi_class(gender, region, age, bmi_val);
+            printf("Classification: %s\n", bmi_class(gender, region, age, bmi_val));
             restart = end_program();
+
         }
 
         else if (strcmp(choice, "BAI") == 0) {
@@ -94,9 +97,9 @@ int main(void) {
 
             // BAI calculation module run
             double bai_val = bai_calc(height, hipc, unit);
-            printf("Classification: ");
-            bai_class(gender, age, bai_val);
+            printf("Classification: %s\n", bai_class(gender, age, bai_val));
             restart = end_program();
+
         }
 
         else if (strcmp(choice, "WHR") == 0) {
@@ -107,9 +110,9 @@ int main(void) {
 
             // WHR calculation module run
             double whr_val = whr_calc(hipc, waist, unit);
-            printf("Classification: ");
-            whr_class(gender, age, whr_val);
+            printf("Classification: %s\n", whr_class(gender, age, whr_val));
             restart = end_program();
+
         }
 
         else if (strcmp(choice, "RFM") == 0) {
@@ -120,9 +123,9 @@ int main(void) {
 
             // RFM calculation module run
             double rfm_val = rfm_calc(height, waist, gender);
-            printf("Classification: ");
-            rfm_class(gender, rfm_val);
+            printf("Classification: %s\n", rfm_class(gender, rfm_val));
             restart = end_program();
+
         }
 
         else if (strcmp(choice, "WHtR") == 0) {
@@ -133,9 +136,9 @@ int main(void) {
 
             // WHtR calculation module run
             double whtr_val = whtr_calc(height, waist);
-            printf("Classification: ");
-            whtr_class(whtr_val);
+            printf("Classification: %s\n", whtr_class(whtr_val));
             restart = end_program();
+
         }
 
         else if (strcmp(choice, "MM") == 0) {
@@ -156,25 +159,71 @@ int main(void) {
             double rfm_val = rfm_calc(height, waist, gender);
             double whtr_val = whtr_calc(height, waist);
 
+            // Get strings for classifications
+            const char* bmi_clas = bmi_class(gender, region, age, bmi_val);
+            const char* bai_clas = bai_class(gender, age, bai_val);
+            const char* whr_clas = whr_class(gender, age, whr_val);
+            const char* rfm_clas = rfm_class(gender, rfm_val);
+            const char* whtr_clas = whtr_class(whtr_val);
+
             // MM report on display
             printf("\n=====LemonHealth MultiMeasure Report======\n");
             printf("BMI: %lf\n", bmi_val);
-            printf("Classification: ");
-            bmi_class(gender, region, age, bmi_val);
+            printf("Classification: %s\n", bmi_clas);
             printf("BAI: %lf\n", bai_val);
-            printf("Classification: ");
-            bai_class(gender, age, bai_val);
+            printf("Classification: %s\n", bai_clas);
             printf("WHR: %lf\n", whr_val);
-            printf("Classification: ");
-            whr_class(gender, age, whr_val);
+            printf("Classification: %s\n", whr_clas);
             printf("RFM: %lf\n", rfm_val);
-            printf("Classification: ");
-            rfm_class(gender, rfm_val);
-            printf("WHtR: %lf", whtr_val);
-            printf("Classification: ");
-            whtr_class(whtr_val);
+            printf("Classification: %s\n", rfm_clas);
+            printf("WHtR: %lf\n", whtr_val);
+            printf("Classification: %s\n", whtr_clas);
+
+            // File Export Logic
+            time_t t = time(NULL);
+            struct tm *tm_info = localtime(&t);
+            char timestamp[20];
+            char filename[50];
+            strftime(timestamp, sizeof(timestamp), "%Y%m%d-%H%M%S", tm_info);
+            sprintf(filename, "lh-mm-report-%s.txt", timestamp);
+
+            FILE *fptr = fopen(filename, "w");
+            if (fptr == NULL) {
+                printf("\nError: Could not create report file.\n");
+            } else {
+                fprintf(fptr, "========LemonHealth MultiMeasure Report========\n\n");
+                fprintf(fptr, "Provided Inputs:\n");
+                fprintf(fptr, "Age: %d\n", age);
+                fprintf(fptr, "Gender: %s\n", (gender == 'M' ? "Male" : "Female"));
+                fprintf(fptr, "Region: %s\n", (region == 'A' ? "Asia" : "Global/Other"));
+                fprintf(fptr, "Units: %s\n", (unit == 'M' ? "Metric" : "Imperial"));
+                fprintf(fptr, "Weight: %.2f\n", weight);
+                fprintf(fptr, "Height: %.2f\n", height);
+                fprintf(fptr, "Waist: %.2f\n", waist);
+                fprintf(fptr, "Hip Circumference: %.2f\n\n", hipc);
+
+                fprintf(fptr, "=====Classifications=====\n");
+                fprintf(fptr, "BMI Value: %lf\n", bmi_val);
+                fprintf(fptr, "BMI Classification: %s\n", bmi_clas);
+                fprintf(fptr, "BAI Value: %lf\n", bai_val);
+                fprintf(fptr, "BAI Classification: %s\n", bai_clas);
+                fprintf(fptr, "WHR Value: %lf\n", whr_val);
+                fprintf(fptr, "WHR Classification: %s\n", whr_clas);
+                fprintf(fptr, "RFM Value: %lf\n", rfm_val);
+                fprintf(fptr, "RFM Classification: %s\n", rfm_clas);
+                fprintf(fptr, "WHtR Value: %lf\n", whtr_val);
+                fprintf(fptr, "WHtR Classification: %s\n\n", whtr_clas);
+
+                char footer_time[30];
+                strftime(footer_time, sizeof(footer_time), "%Y-%m-%d %H:%M:%S", tm_info);
+                fprintf(fptr, "Report Generated on: %s\n", footer_time);
+                fclose(fptr);
+                printf("\nReport successfully exported to: %s\n", filename);
+            }
+
             restart = end_program();
         }
+
 
         else {
             printf("\nFunction '%s' not found!\n", choice);
@@ -368,174 +417,119 @@ double whr_calc(double hipc, double waist, char unit) {
     return whr;
 }
 
-void bmi_class(char gender, char region, int age, double bmi) {
+const char* bmi_class(char gender, char region, int age, double bmi) {
     if (age <= 18) {
-        printf("- \n");
-        printf("\nClassification cannot be done for users below 18\n");
+        return "N/A (Classification cannot be done for users below 18)";
     }
     else if (region == 'O') { // Global standards
         if (bmi <= BMI_UNDERWEIGHT) {
-            printf("Underweight\n");
+            return "Underweight";
         }
         else if (bmi < BMI_NORMAL_MAX && bmi > BMI_UNDERWEIGHT) {
-            printf("Normal\n");
+            return "Normal";
         }
         else if (bmi < BMI_OVERWEIGHT_MAX && bmi >= BMI_NORMAL_MAX) {
-            printf("Overweight\n");
+            return "Overweight";
         }
         else if (bmi >= BMI_OVERWEIGHT_MAX) {
-            printf("Obese\n");
+            return "Obese";
         }
         else {
             user_error();
+            return "Error";
         }
     }
     else if (region == 'A') { // Asian standards
         if (bmi <= BMI_UNDERWEIGHT) {
-            printf("Underweight\n");
+            return "Underweight";
         }
         else if (bmi < BMI_ASIA_NORMAL_MAX && bmi > BMI_UNDERWEIGHT) {
-            printf("Normal\n");
+            return "Normal";
         }
         else if (bmi < BMI_ASIA_OVERWEIGHT_MAX && bmi >= BMI_ASIA_NORMAL_MAX) {
-            printf("Overweight\n");
+            return "Overweight";
         }
         else if (bmi >= BMI_ASIA_OVERWEIGHT_MAX) {
-            printf("Obese\n");
+            return "Obese";
         }
         else {
             user_error();
+            return "Error";
         }
     }
     else {
         user_error();
+        return "Error";
     }
 }
 
-void bai_class(char gender, int age, double bai) {
+
+const char* bai_class(char gender, int age, double bai) {
     if (age <= 18) {
-        printf("- \n");
-        printf("Classification cannot be done for users below 18\n");
+        return "N/A (Classification cannot be done for users below 18)";
     }
     else if (gender == 'M') {
         if (age < 40) {
-            if (bai < 8) {
-                printf("Underweight\n");
-            }
-            else if (bai < 21 && bai >= 8) {
-                printf("Healthy\n");
-            }
-            else if (bai < 26 && bai >= 21) {
-                printf("Overweight\n");
-            }
-            else {
-                printf("Obese\n");
-            }
+            if (bai < 8) return "Underweight";
+            else if (bai < 21 && bai >= 8) return "Healthy";
+            else if (bai < 26 && bai >= 21) return "Overweight";
+            else return "Obese";
         }
         else if (age <= 60) {
-            if (bai < 11) {
-                printf("Underweight\n");
-            }
-            else if (bai < 23 && bai >= 11) {
-                printf("Healthy\n");
-            }
-            else if (bai < 29 && bai >= 23) {
-                printf("Overweight\n");
-            }
-            else {
-                printf("Obese\n");
-            }
+            if (bai < 11) return "Underweight";
+            else if (bai < 23 && bai >= 11) return "Healthy";
+            else if (bai < 29 && bai >= 23) return "Overweight";
+            else return "Obese";
         }
         else {
-            if (bai < 13) {
-                printf("Underweight\n");
-            }
-            else if (bai < 25 && bai >= 13) {
-                printf("Healthy\n");
-            }
-            else if (bai < 31 && bai >= 25) {
-                printf("Overweight\n");
-            }
-            else {
-                printf("Obese\n");
-            }
+            if (bai < 13) return "Underweight";
+            else if (bai < 25 && bai >= 13) return "Healthy";
+            else if (bai < 31 && bai >= 25) return "Overweight";
+            else return "Obese";
         }
     }
     else if (gender == 'F') {
         if (age < 40) {
-            if (bai < 21) {
-                printf("Underweight\n");
-            }
-            else if (bai < 33 && bai >= 21) {
-                printf("Healthy\n");
-            }
-            else if (bai < 39 && bai >= 33) {
-                printf("Overweight\n");
-            }
-            else {
-                printf("Obese\n");
-            }
+            if (bai < 21) return "Underweight";
+            else if (bai < 33 && bai >= 21) return "Healthy";
+            else if (bai < 39 && bai >= 33) return "Overweight";
+            else return "Obese";
         }
         else if (age <= 60 && age >= 40) {
-            if (bai < 23) {
-                printf("Underweight\n");
-            }
-            else if (bai < 35 && bai >= 23) {
-                printf("Healthy\n");
-            }
-            else if (bai < 41 && bai >= 35) {
-                printf("Overweight\n");
-            }
-            else {
-                printf("Obese\n");
-            }
+            if (bai < 23) return "Underweight";
+            else if (bai < 35 && bai >= 23) return "Healthy";
+            else if (bai < 41 && bai >= 35) return "Overweight";
+            else return "Obese";
         }
         else if (age > 60) {
-            if (bai < 25) {
-                printf("Underweight\n");
-            }
-            else if (bai < 38 && bai >= 25) {
-                printf("Healthy\n");
-            }
-            else if (bai < 43 && bai >= 38) {
-                printf("Overweight\n");
-            }
-            else {
-                printf("Obese\n");
-            }
+            if (bai < 25) return "Underweight";
+            else if (bai < 38 && bai >= 25) return "Healthy";
+            else if (bai < 43 && bai >= 38) return "Overweight";
+            else return "Obese";
         }
         else {
             user_error();
+            return "Error";
         }
     }
+    return "Error";
 }
 
-void whr_class(char gender, int age, double whr) {
-    const char *label = "Default";
+
+const char* whr_class(char gender, int age, double whr) {
     if (gender == 'M') {
-        if (whr <= 0.95) {
-            label = "Low health risk";
-        }
-        else if (whr <= 1.0) {
-            label = "Moderate health risk";
-        }
-        else {
-            label = "High health risk";
-        }
+        if (whr <= 0.95) return "Low health risk";
+        else if (whr <= 1.0) return "Moderate health risk";
+        else return "High health risk";
     }
     else if (gender == 'F') {
-        if (whr <= 0.80) {
-            label = "Low health risk";
-        }
-        else if (whr <= 0.85) {
-            label = "Moderate health risk";
-        }
-        else {
-            label = "High health risk";
-        }
+        if (whr <= 0.80) return "Low health risk";
+        else if (whr <= 0.85) return "Moderate health risk";
+        else return "High health risk";
     }
-    printf("%s\n", label);
+    return "Error";
 }
+
 
 int end_program(void) {
     printf("\nThank you for using LemonHealth!\n");
@@ -575,62 +569,34 @@ double rfm_calc(double height, double waist, char gender) {
     return rfm;
 }
 
-void rfm_class(char gender, double rfm) {
+const char* rfm_class(char gender, double rfm) {
     if (gender == 'M') {
-        if (rfm < 2) {
-            printf("Extremely low fat\n");
-        }
-        else if (rfm < 5) {
-            printf("Essential fat\n");
-        }
-        else if (rfm < 13) {
-            printf("Athlete\n");
-        }
-        else if (rfm < 17) {
-            printf("Fitness\n");
-        }
-        else if (rfm < 24) {
-            printf("Average fat\n");
-        }
-        else {
-            printf("Obese\n");
-        }
+        if (rfm < 2) return "Extremely low fat";
+        else if (rfm < 5) return "Essential fat";
+        else if (rfm < 13) return "Athlete";
+        else if (rfm < 17) return "Fitness";
+        else if (rfm < 24) return "Average fat";
+        else return "Obese";
     }
     else if (gender == 'F') {
-        if (rfm < 10) {
-            printf("Extremely low fat\n");
-        }
-        else if (rfm < 13) {
-            printf("Essential fat\n");
-        }
-        else if (rfm < 20) {
-            printf("Athlete\n");
-        }
-        else if (rfm < 24) {
-            printf("Fitness\n");
-        }
-        else if (rfm < 31) {
-            printf("Average fat\n");
-        }
-        else {
-            printf("Obese\n");
-        }
+        if (rfm < 10) return "Extremely low fat";
+        else if (rfm < 13) return "Essential fat";
+        else if (rfm < 20) return "Athlete";
+        else if (rfm < 24) return "Fitness";
+        else if (rfm < 31) return "Average fat";
+        else return "Obese";
     }
+    return "Error";
 }
+
 
 double whtr_calc(double height, double waist) {
     double whtr = height / waist;
     return whtr;
 }
 
-void whtr_class(double whtr) {
-    if (whtr <= 0.4) {
-        printf("Underweight\n");
-    }
-    else if (whtr < 0.5) {
-        printf("Healthy\n");
-    }
-    else {
-        printf("Overweight\n");
-    }
+const char* whtr_class(double whtr) {
+    if (whtr <= 0.4) return "Underweight";
+    else if (whtr < 0.5) return "Healthy";
+    else return "Overweight";
 }

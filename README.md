@@ -1,4 +1,4 @@
-# LemonHealth in C
+# LemonHealth
 
 ## Introduction
 Command-line based health calculator 
