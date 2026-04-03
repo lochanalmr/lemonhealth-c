@@ -27,10 +27,12 @@ double bmi_calc(double height, double weight, char unit);
 double bai_calc(double height, double hipc, char unit);
 double whr_calc(double hipc, double waist, char unit);
 double rfm_calc(double height, double waist, char gender);
+double whtr_calc(double height, double waist);
 void bmi_class(char gender, char region, int age, double bmi);
 void bai_class(char gender, int age, double bai);
 void whr_class(char gender, int age, double whr);
 void rfm_class(char gender, double rfm);
+void whtr_class(double whtr);
 void report_gen(void);
 void user_error(void);
 int end_program(void); // Returns 1 to restart, 0 to exit
@@ -48,6 +50,7 @@ int main(void) {
         printf("BAI: Body Adiposity Index\n");
         printf("WHR: Waist to Hip Ratio\n");
         printf("RFM: Relative Fat Mass\n");
+        printf("WHtR: Waist to Height Ratio\n");
         printf("MM: MultiMeasure (Report of supported functions)\n");
 
         // Option Selection
@@ -122,6 +125,19 @@ int main(void) {
             restart = end_program();
         }
 
+        else if (strcmp(choice, "WHtR") == 0) {
+            printf("\n===WHtR calculation & classification module===\n");
+            // WHtR calculation related data collection
+            double waist = waist_col();
+            double height = height_col();
+
+            // WHtR calculation module run
+            double whtr_val = whtr_calc(height, waist);
+            printf("Classification: ");
+            whtr_class(whtr_val);
+            restart = end_program();
+        }
+
         else if (strcmp(choice, "MM") == 0) {
             printf("\n===MM calculation & classification module===\n");
 
@@ -138,9 +154,10 @@ int main(void) {
             double bai_val = bai_calc(height, hipc, unit);
             double whr_val = whr_calc(hipc, waist, unit);
             double rfm_val = rfm_calc(height, waist, gender);
+            double whtr_val = whtr_calc(height, waist);
 
             // MM report on display
-            printf("\n=====LemonHealth MultiMeasure Report v1======\n");
+            printf("\n=====LemonHealth MultiMeasure Report======\n");
             printf("BMI: %lf\n", bmi_val);
             printf("Classification: ");
             bmi_class(gender, region, age, bmi_val);
@@ -153,6 +170,9 @@ int main(void) {
             printf("RFM: %lf\n", rfm_val);
             printf("Classification: ");
             rfm_class(gender, rfm_val);
+            printf("WHtR: %lf", whtr_val);
+            printf("Classification: ");
+            whtr_class(whtr_val);
             restart = end_program();
         }
 
@@ -595,5 +615,22 @@ void rfm_class(char gender, double rfm) {
         else {
             printf("Obese\n");
         }
+    }
+}
+
+double whtr_calc(double height, double waist) {
+    double whtr = height / waist;
+    return whtr;
+}
+
+void whtr_class(double whtr) {
+    if (whtr <= 0.4) {
+        printf("Underweight\n");
+    }
+    else if (whtr < 0.5) {
+        printf("Healthy\n");
+    }
+    else {
+        printf("Overweight\n");
     }
 }
