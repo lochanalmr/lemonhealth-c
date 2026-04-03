@@ -225,11 +225,16 @@ int age_s(void) {
 
 char unit_s(void) {
     char unit = '\0';
-    printf("Please select 'M' to use Metric, or 'I' to use Imperial: ");
-    scanf(" %c", &unit);
-    if (unit != 'M' && unit != 'I') {
-        user_error();
+    while (1) {
+        printf("Please select 'M' to use Metric, or 'I' to use Imperial: ");
+        if (scanf(" %c", &unit) == 1 && (unit == 'M' || unit == 'I')) {
+            clear_input_buffer();
+            break;
+        }
+        clear_input_buffer();
+        printf("Invalid input. ");
     }
+
     printf("For calculation purposes following will be assumed from here onwards,\n");
     printf("1. all lengths in Metric are in Meters\n");
     Sleep(300);
