@@ -14,7 +14,7 @@ simply classifying using the supported functions. More advanced classifications
 are expected to be done using the all measurements.
 
 This program is built for running on Microsoft Windows,
-using C (23 standard). The features from the Python version ([lemonhealth-python](https://github.com/lochanalmr/lemonhealth-python))
+using C. Previous features from the Python version ([lemonhealth-python](https://github.com/lochanalmr/lemonhealth-python))
 are directly ported to C. 
 
 **_New features are being added only to this version_**.
