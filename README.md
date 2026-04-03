@@ -29,9 +29,6 @@ are directly ported to C.
 _MultiMeasure is a specialized function that can be used to 
 calculate all supported functions and display a summary report._
 
-The summary report for MultiMeasure will be automatically exported to the same folder the program is running from. (since version 1.2)
-(File name format: lh-mm-report-DATE-TIME)
-
 ## Using the program:-
 - Make sure to input characters capitalized, to prevent repeated input requests. 
 - If '**Metric**' unit system is selected
