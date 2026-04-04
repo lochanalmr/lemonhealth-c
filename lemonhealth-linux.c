@@ -239,7 +239,7 @@ void user_error(void) {
     printf("\n\nThis program ran into an error!\n");
     printf("Restarting Program");
     for (int i = 0; i < 3; i++) {
-        sleep(400);
+        usleep(400000);
         printf(".");
     }
     printf("\n");
@@ -306,15 +306,15 @@ char unit_s(void) {
 
     printf("For calculation purposes following will be assumed from here onwards,\n");
     printf("1. all lengths in Metric are in Meters\n");
-    sleep(300);
+    usleep(300000);
     printf("2. all lengths in Imperial are in Inches\n");
-    sleep(300);
+    usleep(300000);
     printf("3. all weight measurements in Metric are in KiloGrams\n");
-    sleep(300);
+    usleep(300000);
     printf("4. all weight measurements in Imperial are in Pounds\n");
     printf("Take this time to read this");
     for (int i = 0; i < 3; i++) {
-        sleep(400);
+        usleep(400000);
         printf(".");
     }
     printf("\n");
@@ -546,7 +546,7 @@ int end_program(void) {
     if (end_choice == 'C' || end_choice == 'c') {
         printf("Restarting Program");
         for (int i = 0; i < 3; i++) {
-            sleep(400);
+            usleep(400000);
             printf(".");
         }
         printf("\n\n");
