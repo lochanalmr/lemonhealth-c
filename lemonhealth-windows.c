@@ -4,7 +4,6 @@
 #include <math.h>
 #include <time.h>
 
-
 const double LBS_TO_KG = 2.20462;
 const double INCHES_TO_METERS = 39.3701;
 
