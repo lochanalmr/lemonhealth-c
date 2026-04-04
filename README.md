@@ -13,7 +13,7 @@ _**Note:**_ Classifications are still are at basic level, and
 simply classifying using the supported functions. More advanced classifications
 are expected to be done using the all measurements.
 
-This program is built for running on Microsoft Windows,
+This program is built for running on Windows & Linux,
 using C. Previous features from the Python version ([lemonhealth-python](https://github.com/lochanalmr/lemonhealth-python))
 are directly ported to C. 
 
