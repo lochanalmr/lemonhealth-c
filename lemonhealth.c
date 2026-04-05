@@ -46,7 +46,7 @@ int main(void) {
     do {
         // Introduction
         printf("=================================================\n");
-        printf("               LemonHealth v1.20\n");
+        printf("               LemonHealth v1.21\n");
         printf("=================================================\n");
         printf("\nSupported Options are:\n");
         printf("BMI: Body Mass Index\n");
@@ -192,7 +192,7 @@ int main(void) {
                 printf("\nError: Could not create report file.\n");
             } else {
                 fprintf(fptr, "========LemonHealth MultiMeasure Report========\n\n");
-                fprintf(fptr, "Provided Inputs:\n");
+                fprintf(fptr, "Collected Data:\n");
                 fprintf(fptr, "Age: %d\n", age);
                 fprintf(fptr, "Gender: %s\n", (gender == 'M' ? "Male" : "Female"));
                 fprintf(fptr, "Region: %s\n", (region == 'A' ? "Asia" : "Global/Other"));
@@ -202,7 +202,7 @@ int main(void) {
                 fprintf(fptr, "Waist: %.2f\n", waist);
                 fprintf(fptr, "Hip Circumference: %.2f\n\n", hipc);
 
-                fprintf(fptr, "=====Classifications=====\n");
+                fprintf(fptr, "Classifications:\n");
                 fprintf(fptr, "BMI Value: %lf\n", bmi_val);
                 fprintf(fptr, "BMI Classification: %s\n", bmi_clas);
                 fprintf(fptr, "BAI Value: %lf\n", bai_val);
@@ -217,6 +217,7 @@ int main(void) {
                 char footer_time[30];
                 strftime(footer_time, sizeof(footer_time), "%Y-%m-%d %H:%M:%S", tm_info);
                 fprintf(fptr, "Report Generated on: %s\n", footer_time);
+                fprintf(fptr, "Find LemonHealth on github.com/lochanalmr/lemonhealth-c\n\n");
                 fclose(fptr);
                 printf("\nReport successfully exported to: %s\n", filename);
             }
